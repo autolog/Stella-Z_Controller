@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<PluginConfig>
+    <SupportURL>http://forums.indigodomo.com/viewforum.php?f=67</SupportURL>
+    <Field id="description" type="label">
+        <Label>This Plugin controls Stella-Z thermostats in a multi-thermostat installation and enhances the standard device with features such as schedule control, temperature boost and advance to next schedule processing. 😄</Label>
+    </Field>
+    <Field id="copyright" type="label">
+        <Label>Copyright © 2013-2016 Autolog</Label>
+    </Field>
+    <Field id="separator" type="separator"/>      
+    <Field type="checkbox" id="limeProtection" default="true">
+        <Label>Lime Protection:</Label>
+        <Description>Enable automatic lime protection.</Description>
+    </Field>
+    <Field id="scheduleLimeProtectionId" type="menu" visibleBindingId="limeProtection" visibleBindingValue="true">
+        <Label>Lime Protection Schedule:</Label>
+        <List class="indigo.schedules"/>
+    </Field>
+    <Field type="checkbox" id="bypassHeatSourceControllerTypeValidation" default="false">
+        <Label>Bypass:</Label>
+        <Description>Bypass Heat Source Controller type validation.</Description>
+    </Field>
+</PluginConfig>

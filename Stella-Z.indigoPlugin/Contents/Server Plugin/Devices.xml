@@ -1,0 +1,257 @@
+<?xml version="1.0"?>
+
+<Devices>
+	<Device type="custom" id="stellazType">
+		<Name>Stella-Z Thermostat Controller</Name>
+		<ConfigUI>
+			<Field type="checkbox" id="hideTempBroadcast" defaultValue="false">
+				<Description>Hide temperature message broadcasts in Event Log</Description>
+			</Field>
+			<Field id="separator-1" type="separator" />
+    		<Field id="heading-1" type="label">
+        		<Label>Associated &amp; controlled devices:</Label>
+    		</Field>
+			<Field id="stellazId" type="menu">
+				<Label>Stella-Z Thermostat:</Label>
+				<List class="indigo.devices" filter="indigo.thermostat"/>
+			</Field>
+			<Field id="heatingId" type="menu">
+				<Label>Heat Source Controller:</Label>
+				<List class="self" method="heatSourceControllerDevices"/>
+			</Field>
+    		<Field id="help-1" type="label">
+        		<Label>Select the Stella-Z thermostat to be controlled by this device and the Heat Source Controller that will be requested to provide heat when the Stella-Z thermostat is calling for heat. If no Heat Source Controller listed then change Plugin Config to disable validation.</Label>
+			</Field>
+			<Field id="separator-2" type="separator" />
+			<Field type="checkbox" id="remoteSetup" defaultValue="false">
+				<Label>Remote Control:</Label>
+				<Description>Check to select Remote Thermostat</Description>
+			</Field>
+    		<Field id="help-2" type="label">
+        		<Label>Optionally, select a remote thermostat (or temperature measuring device) that can be used to control the Stella-Z.</Label>
+				</Field>
+			<Field id="remoteId" type="menu" visibleBindingId="remoteSetup" visibleBindingValue="true">
+				<Label>Remote Thermostat:</Label>
+				<List class="indigo.devices"/>
+			</Field>
+			<Field type="checkbox" id="remoteHeatSetpointControl" defaultValue="false" visibleBindingId="remoteSetup" visibleBindingValue="true">
+				<Label>Remote Setpoint Adjustment:</Label>
+				<Description>Check to enable manual adjustment.</Description>
+			</Field>
+			<Field id="remoteStellazDeltaMax" type="textfield"  defaultValue="5" visibleBindingId="remoteSetup" visibleBindingValue="true">
+				<Label>Stella-Z Delta Max:</Label>
+				<List class="indigo.devices"/>
+    		</Field>
+    		<Field id="help-3" type="label" visibleBindingId="remoteSetup" visibleBindingValue="true">
+        		<Label>Specify the maximum number of degrees to exceed the Stella-Z Heat Setpoint to ensure the Stella-Z is controlled by the Remote Thermostat and not turned off too early.</Label>
+				</Field>
+			<Field id="separator-3" type="separator" />
+		    <Field id="heatSetpointOn" type="textfield" defaultValue="21">
+		        <Label>Default ON temperature:</Label>
+		    </Field>
+		    <Field id="heatSetpointOff" type="textfield" defaultValue="6">
+		        <Label>Default OFF temperature:</Label>
+		    </Field>
+    		<Field id="help-4" type="label">
+        		<Label>Specify the default ON temperature that will be used as the Heat Setpoint if the device is manually turned on. As the Stella-Z thermostat doesn't have an OFF state, a temperature needs to be specified that will be used to set the Stella-Z OFF.</Label>
+    		</Field>
+		    <Field id="separator-4" type="separator" />
+		    <Field id="extendIncrementMinutes" type="textfield" defaultValue="15">
+		        <Label>Extend Increment Minutes:</Label>
+		    </Field>
+		    <Field id="extendMaximumMinutes" type="textfield" defaultValue="120">
+		        <Label>Extend Maximum Minutes:</Label>
+		    </Field>
+    		<Field id="help-5" type="label">
+        		<Label>Specify the incremental number of minutes to extend the heating schedule by. Each extend will add this number of minutes to the schedule until the maximum extend time is reached. A further extend will then cancel the extend and reset the schedule back to its default.</Label>
+    		</Field>
+		    <Field id="separator-5" type="separator" />
+		    <Field id="boostDelta" type="textfield" defaultValue="2">
+		        <Label>Boost Delta:</Label>
+		    </Field>
+		    <Field id="boostMinutes" type="textfield" defaultValue="20">
+		        <Label>Boost Minutes:</Label>
+		    </Field>
+    		<Field id="help-5b" type="label">
+        		<Label>Specify the amount of degrees of boost to be applied to the Stella-Z ambient measured temperature when boost is applied and for how many minutes the boost should remain active.</Label>
+    		</Field>
+		    <Field id="separator-6" type="separator" />
+			<Field type="checkbox" id="scheduleAmSetup" defaultValue="true">
+				<Label>AM Heating?:</Label>
+				<Description>Check to define AM Schedule</Description>
+			</Field>
+		    <Field id="scheduleAmTimeOn" type="textfield" defaultValue="07:00" visibleBindingId="scheduleAmSetup" visibleBindingValue="true">
+		        <Label>AM Heating ON Time:</Label>
+		    </Field>
+		    <Field id="scheduleAmTimeOff" type="textfield" defaultValue="10:00" visibleBindingId="scheduleAmSetup" visibleBindingValue="true">
+		        <Label>AM Heating OFF Time:</Label>
+		    </Field>
+		    <Field id="heatSetpointAm" type="textfield" defaultValue="20" visibleBindingId="scheduleAmSetup" visibleBindingValue="true">
+		        <Label>AM Heat Setpoint:</Label>
+		    </Field>
+			<Field type="checkbox" id="schedulePmSetup" defaultValue="true">
+				<Label>PM Heating?:</Label>
+				<Description>Check to define PM Schedule</Description>
+			</Field>
+		    <Field id="schedulePmTimeOn" type="textfield" defaultValue="17:00" visibleBindingId="schedulePmSetup" visibleBindingValue="true">
+		        <Label>PM Heating ON Time:</Label>
+		    </Field>
+		    <Field id="schedulePmTimeOff" type="textfield" defaultValue="22:00" visibleBindingId="schedulePmSetup" visibleBindingValue="true">
+		        <Label>PM Heating OFF Time:</Label>
+		    </Field>
+		    <Field id="heatSetpointPm" type="textfield" defaultValue="21" visibleBindingId="schedulePmSetup" visibleBindingValue="true">
+		        <Label>PM Heat Setpoint:</Label>
+		    </Field>
+    		<Field id="help-6" type="label">
+        		<Label>Confirm whether AM and/or PM heating is required and if so define the ON and OFF times and heat setpoints to be used by this device for the checked heating periods.</Label>
+    		</Field>
+		</ConfigUI>
+
+		<States>
+
+           <State id="mode">
+            	<ValueType boolType="OnOff">Boolean</ValueType>
+            	<TriggerLabel>Mode Changed</TriggerLabel>
+            	<ControlPageLabel>Mode</ControlPageLabel>
+            </State>
+
+           <State id="scheduleAm">
+                <ValueType>String</ValueType>
+                <TriggerLabel>AM Schedule</TriggerLabel>
+                <ControlPageLabel>AM Schedule</ControlPageLabel>
+            </State>
+
+           <State id="scheduleAmActive">
+                <ValueType boolType="TrueFalse">Boolean</ValueType>
+                <TriggerLabel>AM Schedule Active</TriggerLabel>
+                <ControlPageLabel>AM Schedule Active</ControlPageLabel>
+            </State>
+
+           <State id="schedulePm">
+                <ValueType>String</ValueType>
+                <TriggerLabel>PM Schedule</TriggerLabel>
+                <ControlPageLabel>PM Schedule</ControlPageLabel>
+            </State>
+
+           <State id="schedulePmActive">
+                <ValueType boolType="TrueFalse">Boolean</ValueType>
+                <TriggerLabel>PM Schedule Active</TriggerLabel>
+                <ControlPageLabel>PM Schedule Active</ControlPageLabel>
+            </State>
+
+			<State id="advance">
+            	<ValueType boolType="OnOff">Boolean</ValueType>
+				<TriggerLabel>Advance Changed</TriggerLabel>
+				<ControlPageLabel>Advance</ControlPageLabel>
+			</State>
+
+			<State id="advanceRequested">
+            	<ValueType boolType="OnOff">Boolean</ValueType>
+				<TriggerLabel>Advance Requested</TriggerLabel>
+				<ControlPageLabel>Advance Requested</ControlPageLabel>
+			</State>
+
+			<State id="boost">
+            	<ValueType boolType="OnOff">Boolean</ValueType>
+				<TriggerLabel>Boost Changed</TriggerLabel>
+				<ControlPageLabel>Boost</ControlPageLabel>
+			</State>
+
+            <State id="boostRequested">
+                <ValueType boolType="OnOff">Boolean</ValueType>
+                <TriggerLabel>Boost Requested</TriggerLabel>
+                <ControlPageLabel>Boost Requested</ControlPageLabel>
+            </State>
+
+            <State id="boostInfo">
+                <ValueType>String</ValueType>
+                <TriggerLabel>Boost Info</TriggerLabel>
+                <ControlPageLabel>Boost Info</ControlPageLabel>
+            </State>
+
+			<State id="extend">
+            	<ValueType boolType="OnOff">Boolean</ValueType>
+				<TriggerLabel>Extend Changed</TriggerLabel>
+				<ControlPageLabel>Extend</ControlPageLabel>
+			</State>
+
+            <State id="extendRequested">
+                <ValueType boolType="OnOff">Boolean</ValueType>
+                <TriggerLabel>Extend Requested</TriggerLabel>
+                <ControlPageLabel>Extend Requested</ControlPageLabel>
+            </State>
+
+            <State id="extendInfo">
+                <ValueType>String</ValueType>
+                <TriggerLabel>Extend Info</TriggerLabel>
+                <ControlPageLabel>Extend Info</ControlPageLabel>
+            </State>
+
+			<State id="heatSetpoint">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Heat Setpoint changed</TriggerLabel>
+				<ControlPageLabel>Current Heat Setpoint</ControlPageLabel>
+			</State>
+
+            <State id="heatSetpointAm">
+                <ValueType>String</ValueType>
+                <TriggerLabel>AM Heat Setpoint changed</TriggerLabel>
+                <ControlPageLabel>Current AM Heat Setpoint</ControlPageLabel>
+            </State>
+
+            <State id="heatSetpointPm">
+                <ValueType>String</ValueType>
+                <TriggerLabel>PM Heat Setpoint changed</TriggerLabel>
+                <ControlPageLabel>Current PM Heat Setpoint</ControlPageLabel>
+            </State>
+
+			<State id="temperature">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Temperature</TriggerLabel>
+				<ControlPageLabel>Temperature</ControlPageLabel>
+			</State>
+			<State id="temperatureRemote">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Remote Temperature</TriggerLabel>
+				<ControlPageLabel>Remote Temperature</ControlPageLabel>
+			</State>
+			<State id="temperatureStellaz">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Stella-Z Temperature</TriggerLabel>
+				<ControlPageLabel>Stella-Z Temperature</ControlPageLabel>
+			</State>
+
+			<State id="stellazHeatSetPoint">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Stella-Z Heat Setpoint</TriggerLabel>
+				<ControlPageLabel>Stella-Z Heat Setpoint</ControlPageLabel>
+			</State>
+
+			<State id="lastupdated">  <!-- zwaveDatetime -->
+				<ValueType>String</ValueType>
+				<TriggerLabel>Stella-Z ZWave Event Datetime</TriggerLabel>
+				<ControlPageLabel>Stella-Z ZWave Event Datetime</ControlPageLabel>
+			</State>
+
+			<State id="updatetime">  <!-- zwaveDeltaCurrent -->
+				<ValueType>String</ValueType>
+				<TriggerLabel>Stella-Z ZWave Delta</TriggerLabel>
+				<ControlPageLabel>Stella-Z ZWave Delta</ControlPageLabel>
+			</State>
+            <State id="updatetimestamp">  <!-- zwaveRemoteDatetime -->
+                <ValueType>String</ValueType>
+                <TriggerLabel>Remote ZWave Event Datetime</TriggerLabel>
+                <ControlPageLabel>Remote ZWave Event Datetime</ControlPageLabel>
+            </State>
+
+            <State id="timestamp">  <!-- zwaveRemoteDeltaCurrent -->
+                <ValueType>String</ValueType>
+                <TriggerLabel>Remote ZWave Delta</TriggerLabel>
+                <ControlPageLabel>Remote ZWave Delta</ControlPageLabel>
+            </State>
+
+
+		</States>
+		<UiDisplayStateId>mode</UiDisplayStateId>
+	</Device>
+</Devices>

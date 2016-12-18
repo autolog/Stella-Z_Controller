@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+
+<Actions>
+	<Action id="processSetHeatSetpoint" deviceFilter="self">
+		<Name>Set Heat Setpoint</Name>
+		<CallbackMethod>processSetHeatSetpoint</CallbackMethod>
+		<ConfigUI>
+			<Field id="valueSetHeatSetpoint" type="textfield" defaultValue="6">
+				<Label>Heat Setpoint:</Label>
+			</Field>
+		</ConfigUI>
+	</Action>
+	<Action id="processIncreaseHeatSetpoint" deviceFilter="self">
+		<Name>Increase Heat Setpoint</Name>
+		<CallbackMethod>processIncreaseHeatSetpoint</CallbackMethod>
+		<ConfigUI>
+			<Field id="deltaIncreaseHeatSetpoint" type="textfield" defaultValue="1">
+				<Label>Delta:</Label>
+			</Field>
+		</ConfigUI>
+	</Action>
+	<Action id="processDecreaseHeatSetpoint" deviceFilter="self">
+		<Name>Decrease Heat Setpoint</Name>
+		<CallbackMethod>processDecreaseHeatSetpoint</CallbackMethod>
+		<ConfigUI>
+			<Field id="deltaDecreaseHeatSetpoint" type="textfield" defaultValue="1">
+				<Label>Delta:</Label>
+			</Field>
+		</ConfigUI>
+	</Action>
+	<Action id="processTurnOn" deviceFilter="self">
+		<Name>Turn Thermostat On</Name>
+		<CallbackMethod>processTurnOn</CallbackMethod>
+	</Action>
+	<Action id="processTurnOff" deviceFilter="self">
+		<Name>Turn Thermostat Off</Name>
+		<CallbackMethod>processTurnOff</CallbackMethod>
+	</Action>
+	<Action id="processToggleTurnOnOff" deviceFilter="self">
+		<Name>Toggle Thermostat On/Off</Name>
+		<CallbackMethod>processToggleTurnOnOff</CallbackMethod>
+	</Action>
+	<Action id="processAdvance" deviceFilter="self">
+		<Name>Advance</Name>
+		<CallbackMethod>processAdvance</CallbackMethod>
+	</Action>
+	<Action id="processCancelAdvance" deviceFilter="self">
+		<Name>Cancel Advance</Name>
+		<CallbackMethod>processCancelAdvance</CallbackMethod>
+	</Action>
+	<Action id="processAdvanceToggle" deviceFilter="self">
+		<Name>Toggle Advance</Name>
+		<CallbackMethod>processAdvanceToggle</CallbackMethod>
+	</Action>
+	<Action id="processBoost" deviceFilter="self">
+		<Name>Boost</Name>
+		<CallbackMethod>processBoost</CallbackMethod>
+	</Action>
+	<Action id="processCancelBoost" deviceFilter="self">
+		<Name>Cancel Boost</Name>
+		<CallbackMethod>processCancelBoost</CallbackMethod>
+	</Action>
+	<Action id="processBoostToggle" deviceFilter="self">
+		<Name>Toggle Boost</Name>
+		<CallbackMethod>processBoostToggle</CallbackMethod>
+	</Action>
+	<Action id="processExtend" deviceFilter="self">
+		<Name>Extend</Name>
+		<CallbackMethod>processExtend</CallbackMethod>
+	</Action>
+	<Action id="processCancelExtend" deviceFilter="self">
+		<Name>Cancel Extend</Name>
+		<CallbackMethod>processCancelExtend</CallbackMethod>
+	</Action>
+	<Action id="processShowSchedules">
+		<Name>Show Schedules</Name>
+		<CallbackMethod>processShowSchedules</CallbackMethod>
+	</Action>
+	<Action id="processShowStatus" deviceFilter="self">
+		<Name>Show Internal Status</Name>
+		<CallbackMethod>processShowStatus</CallbackMethod>
+	</Action>
+	<Action id="processShowZwaveWakeupInterval">
+		<Name>Show Z-Wave Wakeup Interval</Name>
+		<CallbackMethod>processShowZwaveWakeupInterval</CallbackMethod>
+	</Action>
+	<Action id="processMonitorStellazZwave" deviceFilter="self">
+		<Name>Monitor Stella-Z Z-wave</Name>
+		<CallbackMethod>processMonitorStellazZwave</CallbackMethod>
+	</Action>
+	<Action id="processMonitorRemoteZwave" deviceFilter="self">
+		<Name>Monitor Remote Thermostat Z-wave</Name>
+		<CallbackMethod>processMonitorRemoteZwave</CallbackMethod>
+	</Action>
+	<Action id="processLimeProtection">
+		<Name>Perform Lime Protection</Name>
+		<CallbackMethod>processLimeProtection</CallbackMethod>
+	</Action>
+	<Action id="processCancelLimeProtection">
+		<Name>Cancel Lime Protection</Name>
+		<CallbackMethod>processCancelLimeProtection</CallbackMethod>
+	</Action>
+
+
+</Actions>

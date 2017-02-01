@@ -1,20 +1,21 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Stella-Z Thermostat Controller © Autolog 2013-2014
+# Stella-Z Thermostat Controller © Autolog 2013-2017
 
+try:
+    import indigo
+except ImportError:
+    pass
 from collections import deque
 import datetime
 from datetime import datetime as autologdatetime
 import operator
 from threading import Lock
-import httplib, urllib
-import traceback
 import sys
 
 
 class Plugin(indigo.PluginBase):
-
 
     def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
 
@@ -22,11 +23,9 @@ class Plugin(indigo.PluginBase):
 
         self.validatePrefsConfigUi(pluginPrefs)  # Validate the Plugin Config
 
-
     def __del__(self):
 
         indigo.PluginBase.__del__(self)
-
 
     def validatePrefsConfigUi(self, valuesDict):
 
@@ -54,8 +53,6 @@ class Plugin(indigo.PluginBase):
             self.bypassHeatSourceControllerTypeValidation = False
 
         return True
-    
-
 
     def runConcurrentThread(self):
 
@@ -88,9 +85,9 @@ class Plugin(indigo.PluginBase):
                 if remainder == 0:
                     self.runConcurrentQueue.append('F')
 
-                #quotient, remainder = divmod(self.secondCounter, 90)  # 30 minutes (1800)
-                #if remainder == 0:
-                #    self.runConcurrentQueue.append('G')
+                # quotient, remainder = divmod(self.secondCounter, 90)  # 30 minutes (1800)
+                # if remainder == 0:
+                #     self.runConcurrentQueue.append('G')
 
                 quotient, remainder = divmod(self.secondCounter, 3300)  # 55 minutes
                 if remainder == 0:
@@ -116,9 +113,6 @@ class Plugin(indigo.PluginBase):
         except self.StopThread:
             pass    # Optionally catch the StopThread exception and do any needed cleanup.
 
-    
-
-
     def runConcurrentThreadMethodA(self):  # 1 Second
 
         while True:
@@ -132,9 +126,6 @@ class Plugin(indigo.PluginBase):
                     indigo.server.log(u"StandardError detected for '%s' with function '%s'. Line '%s' has error='%s'" % (indigo.devices[self.process[0]].name, self.process[1], sys.exc_traceback.tb_lineno, e), isError=True)   
             except IndexError:
                 break
-
-    
-
 
     def runConcurrentThreadMethodB(self):  # 5 Seconds
 
@@ -175,17 +166,11 @@ class Plugin(indigo.PluginBase):
                         dev.updateStateOnServer(key='mode', value='Inactive', uiValue=self.thermostats[dev.id]['mode'])  # Indicate thermostat no longer calling for heat
                         dev.updateStateImageOnServer(indigo.kStateImageSel.HvacOff)
 
-    
-
-
     def runConcurrentThreadMethodC(self):  # 10 Seconds
 
         # Check all heat sources - should they be on or off
         for key, value in self.heaters.iteritems():
                 self.checkHeatingSourceStatus(key)
-
-    
-
 
     def runConcurrentThreadMethodD(self):  # 30 Seconds
 
@@ -232,7 +217,6 @@ class Plugin(indigo.PluginBase):
                     if self.testDateTime < self.currentTime:
                         indigo.server.log(u"'%s' Checking for Extend End from runConcurrentThread" % (dev.name))
                         self.processQueue.append((dev.id,'processEstablishState'))
-    
 
 
     def checkTime(self, currentTime, checkTime):
@@ -241,24 +225,15 @@ class Plugin(indigo.PluginBase):
         else:
             return False
 
-    
-
-
     def runConcurrentThreadMethodE(self):  # 1 minute
 
         # Check Lime Protection
         self.handleLimeProtection()
 
-    
-
-
     def runConcurrentThreadMethodF(self):  # 5 minutes
 
         # Check Lime Protection
         self.checkLimeProtectionStatus()
-
-    
-
 
     def runConcurrentThreadMethodG(self):  # 30 minutes
 
@@ -269,17 +244,12 @@ class Plugin(indigo.PluginBase):
                     indigo.server.log(u"WARNING: Z-Wave monitoring may not be active for '%s' - Please check / set-up trigger for Stella-Z '%s' (see Plugin documentation)" % (dev.name, indigo.devices[self.thermostats[dev.id]['stellazId']].name), isError=True)
                 elif self.thermostats[dev.id]['remoteId'] != 0 and self.thermostats[dev.id]['zwaveRemoteEventCount'] == 0 and self.thermostats[dev.id]['zwaveRemoteWakeupDelay'] == True:
                     indigo.server.log(u"WARNING: Z-Wave monitoring may not be fully active for '%s' - Please check / set-up trigger for Remote Thermostat '%s' (see Plugin documentation)" % (dev.name, indigo.devices[self.thermostats[dev.id]['remoteId']].name), isError=True)
-    
-
 
     def runConcurrentThreadMethodH(self):  # 55 minutes
 
         # Check all heat sources - should they be on or off
         for key, value in self.heaters.iteritems():
             self.processKeepHeatSourceControllerAlive(key)
-
-    
-
 
     def updateZwaveStatus(self, dev):
 
@@ -325,9 +295,6 @@ class Plugin(indigo.PluginBase):
         except StandardError, e:
 
             indigo.server.log(u"StandardError detected for '%s' with function '%s'. Line '%s' has error='%s'" % (indigo.devices[self.process[0]].name, self.process[1], sys.exc_traceback.tb_lineno, e), isError=True)   
-        return
-    
-
 
     def updateRemoteZwaveStatus(self, dev):
 
@@ -366,10 +333,6 @@ class Plugin(indigo.PluginBase):
                 indigo.server.log("'%s' [Remote Thermosta] has woken up but at least one wakeup was missed." % (dev.name))
         dev.updateStateOnServer("timestamp", self.thermostats[dev.id]['zwaveRemoteDeltaCurrent'] + ' [' + str(self.thermostats[dev.id]['zwaveRemoteWakeupInterval']) + ']')
 
-        return
-    
-
-
     def processMonitorStellazZwave(self, pluginAction, dev):
 
         # pluginAction = 'processMonitorStellazZwaveActivity'
@@ -381,10 +344,6 @@ class Plugin(indigo.PluginBase):
         self.thermostats[dev.id]['zwaveDatetime'] = str(indigo.server.getTime())[0:19]
 
         self.processQueue.append((dev.id,'updateZwaveStatus'))  # Update Stella-Z Z-Wave status
-
-        return
-    
-
 
     def processMonitorRemoteZwave(self, pluginAction, dev):
 
@@ -399,10 +358,6 @@ class Plugin(indigo.PluginBase):
         self.thermostats[dev.id]['zwaveRemoteDatetime'] = str(indigo.server.getTime())[0:19]
 
         self.processQueue.append((dev.id,'updateRemoteZwaveStatus'))  # Update Remote Thermostat Z-Wave status
-
-        return
-    
-
 
     def deviceUpdated(self, origDev, newDev):
 
@@ -469,9 +424,6 @@ class Plugin(indigo.PluginBase):
 
         indigo.PluginBase.deviceUpdated(self, origDev, newDev)
 
-        return
-    
-
     def _refreshStatesFromStellaz(self, dev, logRefresh, commJustStarted):
 
         devId = dev.id
@@ -520,10 +472,6 @@ class Plugin(indigo.PluginBase):
         dev.updateStateOnServer("temperatureStellaz", float(self.thermostats[devId]['temperatureStellaz']))
         dev.updateStateOnServer("temperatureRemote", float(self.thermostats[devId]['temperatureRemote']))
 
-        return
-    
-
-
     def checkHeatingSourceStatus(self, heatingId):
         # Determine if heating should be started / ended 
 
@@ -560,10 +508,6 @@ class Plugin(indigo.PluginBase):
         finally:
             self.lock.release()
 
-        return
-    
-
-
     def processKeepHeatSourceControllerAlive(self, heatingId):
 
         self.lock.acquire()
@@ -580,10 +524,6 @@ class Plugin(indigo.PluginBase):
                     indigo.thermostat.setHvacMode(heatingId, value=indigo.kHvacMode.Off) # remind Heat Source Controller to stay 'off'
         finally:
             self.lock.release()
-
-        return
-    
-
 
     def handleLimeProtection(self):
 
@@ -640,10 +580,6 @@ class Plugin(indigo.PluginBase):
                             self.thermostats[devId]['heatSetpointStellaz'] = self.thermostats[devId]['heatSetpointOff']
                             indigo.thermostat.setHeatSetpoint(self.thermostats[devId]['stellazId'], value=float(self.thermostats[devId]['heatSetpointStellaz']))  # Force Valve Close
 
-        return
-    
-
-
     def checkLimeProtectionStatus(self):
 
         if self.limeProtectionRequested == False and self.limeProtectionActive == False:
@@ -669,10 +605,6 @@ class Plugin(indigo.PluginBase):
             self.limeProtectionActive = False
             self.limeProtectionRequested = False
             indigo.server.log("Lime Protection now completed")
-
-        return
-    
-
 
     def validateActionConfigUi(self, valuesDict, typeId, actionId):
 
@@ -729,16 +661,11 @@ class Plugin(indigo.PluginBase):
         self.validateActionFlag.clear()
 
         return (True, valuesDict)
-    
 
     
     def processLimeProtection(self, pluginAction):
 
         self.limeProtectionRequested = True
-
-        return
-    
-
 
     def processCancelLimeProtection(self, pluginAction):
 
@@ -748,25 +675,13 @@ class Plugin(indigo.PluginBase):
 
         self.limeProtectionRequested = False
 
-        return
-    
-
-
     def processTurnOn(self, pluginAction, dev):
 
         self.processQueue.append((dev.id,'processSetHeatSetpointOn'))
 
-        return
-    
-
-
     def processTurnOff(self, pluginAction, dev):
 
         self.processQueue.append((dev.id,'processSetHeatSetpointOff'))
-
-        return
-    
-
 
     def processToggleTurnOnOff(self, pluginAction, dev):
 
@@ -774,10 +689,6 @@ class Plugin(indigo.PluginBase):
             self.processTurnOn(pluginAction, dev)
         else:
             self.processTurnOff(pluginAction, dev)
- 
-        return
-    
-
 
     def processSetHeatSetpoint(self, pluginAction, dev):
 
@@ -793,10 +704,6 @@ class Plugin(indigo.PluginBase):
             return
 
         self.processQueue.append((dev.id,'processSetHeatSetpoint'))
-
-        return
-    
-
 
     def processIncreaseHeatSetpoint(self, pluginAction, dev):
 
@@ -816,10 +723,6 @@ class Plugin(indigo.PluginBase):
 
         self.processQueue.append((dev.id,'processIncreaseHeatSetpoint'))
 
-        return
-    
-
-
     def processDecreaseHeatSetpoint(self, pluginAction, dev):
 
         try:
@@ -837,26 +740,14 @@ class Plugin(indigo.PluginBase):
             return
 
         self.processQueue.append((dev.id,'processDecreaseHeatSetpoint'))
- 
-        return
-    
-
 
     def processAdvance(self, pluginAction, dev):
 
         self.processQueue.append((dev.id,'processAdvance'))
 
-        return
-    
-
-
     def processCancelAdvance(self, pluginAction, dev):
 
         self.processQueue.append((dev.id,'processCancelAdvance'))
-
-        return
-    
-
 
     def processAdvanceToggle(self, pluginAction, dev):
 
@@ -865,25 +756,13 @@ class Plugin(indigo.PluginBase):
         else:
             self.processCancelAdvance(pluginAction, dev)
 
-        return
-    
-
-
     def processBoost(self, pluginAction, dev):
 
         self.processQueue.append((dev.id,'processBoost'))
 
-        return
-    
-
-
     def processCancelBoost(self, pluginAction, dev):
 
         self.processQueue.append((dev.id,'processCancelBoost'))
-
-        return
-    
-
 
     def processBoostToggle(self, pluginAction, dev):
 
@@ -892,37 +771,21 @@ class Plugin(indigo.PluginBase):
         else:
             self.processCancelBoost(pluginAction, dev)
 
-        return
-    
-
-
     def processExtend(self, pluginAction, dev):
 
         indigo.server.log("Extend requested for '%s' - Initial logic" % (dev.name))
         self.processQueue.append((dev.id,'processExtend'))
-
-        return
-    
-
 
     def processCancelExtend(self, pluginAction, dev):
 
         indigo.server.log("Extend cancelled for '%s' - Initial logic" % (dev.name))
         self.processQueue.append((dev.id,'processCancelExtend'))
 
-        return
-    
-
-
     def processEstablishState(self, pluginAction, dev):
 
         self.processQueue.append((dev.id,'processEstablishState'))
 
-        return
-    
-
     def processShowSchedules(self, pluginAction):
-
 
         indigo.server.log(u"Heating Schedules")
 
@@ -942,9 +805,6 @@ class Plugin(indigo.PluginBase):
 
                 indigo.server.log(u"'%s' AM = [%s], PM = [%s]" % (dev.name, self.amShow, self.pmShow))
 
-        return
-    
-
     def processShowStatus(self, pluginAction, dev):
  
         devId = dev.id
@@ -953,10 +813,6 @@ class Plugin(indigo.PluginBase):
             indigo.server.log("'%s' %s = %s" % (dev.name, self.key, self.thermostats[devId][self.key]))
 
         indigo.server.log("Heat Source Controller '%s':  CallingForHeat = %s" % (indigo.devices[self.thermostats[devId]['heatingId']].name, self.heaters[self.thermostats[devId]['heatingId']]['callingForHeat']))
- 
-
-        return
-    
 
     def processShowZwaveWakeupInterval(self, pluginAction):
  
@@ -981,11 +837,6 @@ class Plugin(indigo.PluginBase):
             self.optimizeDifferenceCalc = int(item1[1] - self.optimizeDifference)
             indigo.server.log("  %s = %s [Interval = %s]" % (item1[0], str("  " + str(item1[1]))[-3:], str("  " + str(self.optimizeDifferenceCalc))[-3:]))
             self.optimizeDifference = int(item1[1])
-
-
-        return
-    
-
 
     def _processThermostat(self, dev, processThermostatFunction):
 
@@ -1531,8 +1382,6 @@ class Plugin(indigo.PluginBase):
             return
         except StandardError, e:
             indigo.server.log(u"StandardError detected for '%s' with function '%s'. Line '%s' has error='%s'" % (indigo.devices[self.process[0]].name, self.process[1], sys.exc_traceback.tb_lineno, e), isError=True)   
-    
-
 
     def startup(self):
 
@@ -1577,15 +1426,9 @@ class Plugin(indigo.PluginBase):
         # indigo.schedules.subscribeToChanges()
         indigo.server.log(u"Autolog Plugin 'Stella-Z Thermostat Controller' initialization complete")
 
-    
-
-
     def shutdown(self):
 
         self.debugLog(u"shutdown called")
-
-    
-
 
     def heatSourceControllerDevices(self, filter="", valuesDict=None, typeId="", targetId=0):
         self.myArray = []
@@ -1601,7 +1444,6 @@ class Plugin(indigo.PluginBase):
 
         return self.myArray
 
-
     def validateDeviceConfigUi(self, valuesDict, typeId, devId):
 
         self.validateDeviceFlag[devId] = {}
@@ -1616,7 +1458,11 @@ class Plugin(indigo.PluginBase):
         try:
             if "stellazId" in valuesDict:
                 self.validateDeviceFlag[devId]['stellazId'] = int(valuesDict["stellazId"])
-                if indigo.devices[self.validateDeviceFlag[devId]['stellazId']].model == "Thermostat (Stella Z)" or indigo.devices[self.validateDeviceFlag[devId]['stellazId']].model == "Setpoint Thermostat":
+                if (indigo.devices[self.validateDeviceFlag[devId]['stellazId']].model == "Thermostat (Stella Z)"
+                    or indigo.devices[self.validateDeviceFlag[devId]['stellazId']].model == "Radiator Thermostat (Living Connect LC-13)"  # EXPERIMENTAL 01-FEB-2017               
+                    or indigo.devices[self.validateDeviceFlag[devId]['stellazId']].model == "Setpoint Thermostat"
+                    or indigo.devices[self.validateDeviceFlag[devId]['stellazId']].model == "Radiator Thermostat (POPP TRV)"
+                    or indigo.devices[self.validateDeviceFlag[devId]['stellazId']].model == "Thermostat (Comet Z)"):
                     pass
                 else:
                     self.validateDeviceFlag[devId]['stellazId'] = 0
@@ -1991,8 +1837,6 @@ class Plugin(indigo.PluginBase):
         self.validateDeviceFlag[devId]["edited"] = True
 
         return (True, valuesDict)
-    
-
 
     def deviceStartComm(self, dev):
 
@@ -2048,11 +1892,7 @@ class Plugin(indigo.PluginBase):
             except:
                 self.thermostats[devId]['remoteId'] = 0
 
-
         # testSchedule = [[['06:45','07:30'],['12:15','13:45'],['19:00','22:45']],[['06:45','07:30'],['12:15','13:45'],['19:00','22:45']],[['06:45','07:30'],['12:15','13:45'],['19:00','22:45']],[['06:45','07:30'],['12:15','13:45'],['19:00','22:45']],[['06:45','07:30'],['12:15','13:45'],['19:00','22:45']],[['06:45','07:30'],['12:15','13:45'],['19:00','22:45']],[['06:45','07:30'],['12:15','13:45'],['19:00','22:45']]]
-
-
-
 
         self.thermostats[devId]['heatSetpointOn'] = float(dev.pluginProps['heatSetpointOn'])
         self.thermostats[devId]['heatSetpointOff'] = float(dev.pluginProps['heatSetpointOff'])
@@ -2237,15 +2077,6 @@ class Plugin(indigo.PluginBase):
 
         self._refreshStatesFromStellaz(dev, False, False)
 
-        return
-
-    
-
-
     def deviceStopComm(self, dev):
 
         indigo.server.log("Stopping '%s'" % (dev.name))
-
-    
-
-

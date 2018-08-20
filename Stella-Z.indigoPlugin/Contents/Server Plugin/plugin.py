@@ -1462,7 +1462,8 @@ class Plugin(indigo.PluginBase):
                     or indigo.devices[self.validateDeviceFlag[devId]['stellazId']].model == "Radiator Thermostat (Living Connect LC-13)"  # EXPERIMENTAL 01-FEB-2017               
                     or indigo.devices[self.validateDeviceFlag[devId]['stellazId']].model == "Setpoint Thermostat"
                     or indigo.devices[self.validateDeviceFlag[devId]['stellazId']].model == "Radiator Thermostat (POPP TRV)"
-                    or indigo.devices[self.validateDeviceFlag[devId]['stellazId']].model == "Thermostat (Comet Z)"):
+                    or indigo.devices[self.validateDeviceFlag[devId]['stellazId']].model == "Thermostat (Comet Z)"
+                    or indigo.devices[self.validateDeviceFlag[devId]['stellazId']].model == "Radiator Thermostat (Devolo 09356)"):
                     pass
                 else:
                     self.validateDeviceFlag[devId]['stellazId'] = 0
